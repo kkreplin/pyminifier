@@ -57,8 +57,6 @@ arguments:
     --obfuscate-variables
                           Obfuscate variable names.
     --ignore-uppercase-variables
-                          Ignore uppercase variable names.                          
-    --ignore-uppercase-variables
                           Ignore uppercase variable names.
     --obfuscate-import-methods
                           Obfuscate globally-imported mouled methods (e.g.
