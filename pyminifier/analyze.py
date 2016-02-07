@@ -224,19 +224,25 @@ def enumerate_imports(tokens):
     Iterates over *tokens* and returns a list of all imported modules.
 
     .. note:: This ignores imports using the 'as' and 'from' keywords.
+    .. note: Imports that are idented (included in class or function) are ignored, thats because currently we are not checking the scope for variable and import
     """
     imported_modules = []
     import_line = False
     from_import = False
+    indent = 0
     for index, tok in enumerate(tokens):
         token_type = tok[0]
         token_string = tok[1]
         if token_type == tokenize.NEWLINE:
             import_line = False
             from_import = False
-        elif token_string == "import":
+        elif token_type == tokenize.INDENT:
+            indent += 1
+        elif token_type == tokenize.DEDENT:
+            indent -= 1
+        elif token_string == "import" and indent == 0:
             import_line = True
-        elif token_string == "from":
+        elif token_string == "from" and indent == 0:
             from_import = True
         elif import_line:
             if token_type == tokenize.NAME and tokens[index+1][1] != 'as':
