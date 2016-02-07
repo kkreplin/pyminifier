@@ -121,6 +121,13 @@ def main():
         help="Obfuscate variable names."
     )
     parser.add_option(
+        "--ignore-uppercase-variables",
+        action="store_true",
+        dest="ign_uppercase_variables",
+        default=False,
+        help="Ignore uppercase variable names."
+    )
+    parser.add_option(
         "--obfuscate-import-methods",
         action="store_true",
         dest="obf_import_methods",
