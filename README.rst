@@ -2,9 +2,13 @@ pyminifier
 ==========
 
 Pyminifier is a Python code minifier, obfuscator, and compressor.
+sejans / pyminifier fork is trying to solve problems that appeared in real app obfuscation.
 
 .. note::
 
+    * For the latest sejans / pyminifier: https://github.com/sejans/pyminifier
+      * added param: --ignore-uppercase-variables
+      * solved some bugs that were found: look in closed issues
     * For the latest, complete documentation: http://liftoff.github.io/pyminifier/
     * For the latest code: https://github.com/liftoff/pyminifier
 
@@ -52,6 +56,8 @@ arguments:
                           Obfuscate function and method names.
     --obfuscate-variables
                           Obfuscate variable names.
+    --ignore-uppercase-variables
+                          Ignore uppercase variable names.                          
     --ignore-uppercase-variables
                           Ignore uppercase variable names.
     --obfuscate-import-methods
