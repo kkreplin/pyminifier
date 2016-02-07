@@ -122,6 +122,8 @@ def find_obfuscatables(tokens, obfunc, ignore_length=False, ign_uppercase_variab
     class_indent = 0
     global keyword_args
     keyword_args = analyze.enumerate_keyword_args(tokens)
+    global class_args
+    class_args = analyze.enumerate_class_args(tokens)
     global imported_modules
     imported_modules = analyze.enumerate_imports(tokens)
     #print("imported_modules: %s" % imported_modules)
@@ -147,7 +149,7 @@ def find_obfuscatables(tokens, obfunc, ignore_length=False, ign_uppercase_variab
         if skip_line:
             continue
         if not inside_class or class_indent != (indent - 1): # dont look at class static attributes
-            result = obfunc(tokens, index, ignore_length=ignore_length, ign_uppercase_variables=ign_uppercase_variables)
+            result = obfunc(tokens, index, ignore_length=ignore_length, ign_uppercase_variables=ign_uppercase_variables, inside_class=inside_class)
         if result:
             if skip_next:
                 skip_next = False
@@ -164,7 +166,7 @@ def find_obfuscatables(tokens, obfunc, ignore_length=False, ign_uppercase_variab
     return obfuscatables
 
 # Note: I'm using 'tok' instead of 'token' since 'token' is a built-in module
-def obfuscatable_variable(tokens, index, ignore_length=False, ign_uppercase_variables=False):
+def obfuscatable_variable(tokens, index, ignore_length=False, ign_uppercase_variables=False, inside_class=None):
     """
     Given a list of *tokens* and an *index* (representing the current position),
     returns the token string if it is a variable name that can be safely
@@ -212,6 +214,9 @@ def obfuscatable_variable(tokens, index, ignore_length=False, ign_uppercase_vari
         return None
     if token_string in keyword_args.keys():
         return None
+    if inside_class:
+        if token_string in class_args[inside_class]:
+            return None
     if token_string in ["def", "class", 'if', 'elif', 'import']:
         return '__skipline__'
     if prev_tok_type != tokenize.INDENT and next_tok_string != '=':

@@ -198,6 +198,27 @@ def enumerate_keyword_args(tokens):
                     keyword_args[function_name].append(token_string)
     return keyword_args
 
+def enumerate_class_args(tokens):
+    """
+    Iterates over *tokens* and returns a dictionary with class names as the
+    keys and lists of superclasses as the values.
+    """
+    class_args = {}
+    inside_class = False
+    for index, tok in enumerate(tokens):
+        token_type = tok[0]
+        token_string = tok[1]
+        if token_type == tokenize.NEWLINE:
+            inside_class = False
+        if token_type == tokenize.NAME:
+            if token_string == "class":
+                class_name = tokens[index+1][1]
+                inside_class = class_name
+                class_args.update({class_name: []})
+            elif inside_class and token_string != class_name:
+                class_args[class_name].append(token_string)
+    return class_args
+
 def enumerate_imports(tokens):
     """
     Iterates over *tokens* and returns a list of all imported modules.
