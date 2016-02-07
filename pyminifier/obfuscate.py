@@ -280,7 +280,7 @@ def replace_obfuscatables(module, tokens, obfunc, replace, name_generator, table
         - **replacement:**  A randomly generated, unique value that will be used to replace, *replace*.
         - **right_of_equal:**   A True or False value representing whether or not the token is to the right of an equal sign.  **Note:** This gets reset to False if a comma or open paren are encountered.
         - **inside_parens:**    An integer that is incremented whenever an open paren is encountered and decremented when a close paren is encountered.
-        - **inside_function:**  If not False, the name of the function definition we're inside of (used in conjunction with *keyword_args* to determine if a safe replacement can be made).
+        - **inside_function:**  If not False, the name of the function definition we're inside as a list (because for cases if in nested function) of (used in conjunction with *keyword_args* to determine if a safe replacement can be made).
 
     *obfunc* is expected to return the token string if that token can be safely
     obfuscated **or** one of the following optional values which will instruct
@@ -329,7 +329,10 @@ def replace_obfuscatables(module, tokens, obfunc, replace, name_generator, table
         if token_string == "def":
             function_indent = indent
             function_name = tokens[index+1][1]
-            inside_function = function_name
+            if not inside_function:
+                inside_function = [function_name]
+            else:
+                inside_function.append(function_name)
         result = obfunc(
             tokens,
             index,
@@ -371,6 +374,7 @@ def replace_obfuscatables(module, tokens, obfunc, replace, name_generator, table
                 else:
                     tokens[index][1] = result
 
+# inside_function - list of nested function in which we are inside
 def obfuscate_variable(
         tokens,
         index,
@@ -420,7 +424,7 @@ def obfuscate_variable(
         return '__skipnext__' # Don't want to touch functions
     if token_string == replace and prev_tok_string != '.':
         if inside_function:
-            if token_string not in keyword_args[inside_function]:
+            if token_string not in [param for function in inside_function for param in keyword_args[function]]:
                 if not right_of_equal:
                     if not inside_parens:
                         return return_replacement(replacement)
