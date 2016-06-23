@@ -682,7 +682,7 @@ def obfuscate_global_import_methods(module, tokens, name_generator, table=None):
                     index += 6 # To make up for the six tokens we inserted
             index += 1
 
-def obfuscate(module, tokens, options, name_generator=None, table=None):
+def obfuscate(module, tokens, options, name_generator=None, table=None, ign_uppercase_variables=False):
     """
     Obfuscates *tokens* in-place.  *options* is expected to be the options
     variable passed through from pyminifier.py.
@@ -713,7 +713,7 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
                 identifier_length=identifier_length)
     if options.obfuscate:
         variables = find_obfuscatables(
-            tokens, obfuscatable_variable, ignore_length=ignore_length, ign_uppercase_variables=options.ign_uppercase_variables)
+            tokens, obfuscatable_variable, ignore_length=ignore_length, ign_uppercase_variables=ign_uppercase_variables)
         classes = find_obfuscatables(
             tokens, obfuscatable_class)
         functions = find_obfuscatables(
@@ -768,7 +768,7 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
                 )
         if options.obf_variables:
             variables = find_obfuscatables(
-                tokens, obfuscatable_variable, ign_uppercase_variables=options.ign_uppercase_variables)
+                tokens, obfuscatable_variable, ign_uppercase_variables=ign_uppercase_variables)
             for variable in variables:
                 replace_obfuscatables(
                     module,
